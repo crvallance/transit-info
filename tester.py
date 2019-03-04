@@ -1,6 +1,7 @@
-import secrets
+from secrets import secrets
 import requests
 from datetime import datetime, timedelta
+import time
 
 class ScheduledEvent(object):
     def __init__(self):
@@ -14,7 +15,7 @@ class ScheduledEvent(object):
 def train_times():
     train_url = 'http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx?outputType=JSON&key='
     rockwell_id = '41010'
-    rockwell_url = train_url + secrets.train_tracker + '&mapid={}'.format(rockwell_id)
+    rockwell_url = train_url + secrets['train_tracker'] + '&mapid={}'.format(rockwell_id)
     rockwell_walk = 14
     r_times = requests.get(rockwell_url)
     times_data = r_times.json() 
@@ -26,8 +27,6 @@ def train_times():
             # print(eta['rn'])
             # print(eta['arrT'])
             arrT = datetime.strptime(eta['arrT'], '%Y-%m-%dT%H:%M:%S')
-            travel_time = (arrT + timedelta(minutes=rockwell_walk))
-            # print(arrT)
             time = ScheduledEvent()
             time.arrT = arrT
             time.name = eta['rn']
@@ -39,7 +38,7 @@ def train_times():
 def bus_times():
     bus_route = '11'
     foster_western = '14965'
-    bus_url = 'http://www.ctabustracker.com/bustime/api/v2/getpredictions?format=json&key={}&stpid={}&rd={}'.format(secrets.bus_tacker, foster_western, bus_route)
+    bus_url = 'http://www.ctabustracker.com/bustime/api/v2/getpredictions?format=json&key={}&stpid={}&rd={}'.format(secrets['bus_tacker'], foster_western, bus_route)
     r_times = requests.get(bus_url)
     times_data = r_times.json()
     all_times = []
@@ -66,8 +65,5 @@ def main():
         print('The {} bus ({}) will be here in {} minutes'.format(bus.name, bus.arrT.strftime('%I:%M'), bus.prdct))
 
 if __name__ == "__main__":
-    # execute only if run as a script
-    # train_times()
-    # bus_times()
     main()
 
