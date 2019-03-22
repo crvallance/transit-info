@@ -46,8 +46,8 @@ def bus_times():
     if 'error' in times_data['bustime-response']:
         print('Bus error: {}'.format(times_data['bustime-response']['error'][0]['msg']))
     else:
-        for bus in times_data['bustime-response']:
-            arrT = datetime.strptime(bus['prdtm'], '%Y-%m-%d %H:%M')
+        for bus in times_data['bustime-response']['prd']:
+            arrT = datetime.strptime(bus['prdtm'], '%Y%m%d %H:%M')
             time = ScheduledEvent()
             time.arrT = arrT
             time.name = bus['vid']
